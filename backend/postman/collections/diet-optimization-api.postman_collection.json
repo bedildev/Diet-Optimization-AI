@@ -1,0 +1,95 @@
+{
+  "info": {
+    "_postman_id": "8d979b0e-0b4c-4e6f-9f4f-9f37a29b4b6d",
+    "name": "Diet Optimization API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "00000000"
+  },
+  "item": [
+    {
+      "name": "Health Check",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "const json = pm.response.json();",
+              "pm.test(\"Response status is success\", function () {",
+              "  pm.expect(json.status).to.eql(\"success\");",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:{{port}}/",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "{{port}}",
+          "path": [
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Optimize Menu (Dummy)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 200\", function () {",
+              "  pm.response.to.have.status(200);",
+              "});",
+              "const json = pm.response.json();",
+              "pm.test(\"Response status is success\", function () {",
+              "  pm.expect(json.status).to.eql(\"success\");",
+              "});",
+              "pm.test(\"Has rekomendasi_menu array\", function () {",
+              "  pm.expect(json.data.rekomendasi_menu).to.be.an(\"array\");",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"budget_maksimal\": 10000,\r\n  \"target_kalori\": 500\r\n}"
+        },
+        "url": {
+          "raw": "http://localhost:{{port}}/v1/optimize",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "{{port}}",
+          "path": [
+            "v1",
+            "optimize"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
