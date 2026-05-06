@@ -13,10 +13,10 @@ class OptimizationRequest(BaseModel):
 # Endpoint dasar untuk mengecek apakah API menyala
 @app.get("/")
 def read_root():
-    return {"message": "Server AI menyala! Silakan hit endpoint /optimize"}
+    return {"message": "Server AI menyala! Silakan hit endpoint /optimizes"}
 
 # Endpoint utama untuk meminta rekomendasi menu
-@app.post("/optimize")
+@app.post("/optimizes")
 def optimize_menu(request: OptimizationRequest):
     
     return {

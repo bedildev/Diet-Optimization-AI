@@ -1,35 +1,45 @@
 const express = require("express");
+const axios = require("axios");
 
 const { validate } = require("../middleware/validate");
 const { optimizeSchema } = require("../validators/optimize");
 
 const router = express.Router();
 
-router.post("/optimize", validate(optimizeSchema), (req, res) => {
-  const { budget_maksimal, target_kalori } = req.body;
+const FASTAPI_BASE_URL = process.env.FASTAPI_BASE_URL || "http://localhost:8000";
 
-  res.json({
-    status: "success",
-    message: "Ini adalah data dummy.",
-    data: {
-      parameter_pencarian: {
-        budget: budget_maksimal,
-        kalori: target_kalori
-      },
-      rekomendasi_menu: [
-        { nama: "Nasi Putih", porsi: "100g", harga: 1500, kalori: 130 },
-        { nama: "Sayur Bayam Bening", porsi: "100g", harga: 2000, kalori: 36 },
-        { nama: "Tempe Goreng", porsi: "50g", harga: 1500, kalori: 170 },
-        { nama: "Telur Rebus", porsi: "1 butir", harga: 2500, kalori: 78 },
-        { nama: "Pisang Ambon", porsi: "1 buah", harga: 2000, kalori: 89 }
-      ],
-      ringkasan: {
-        total_harga: 9500,
-        total_kalori: 503,
-        total_protein: 21
+router.post("/optimizes", validate(optimizeSchema), async (req, res, next) => {
+  try {
+    const response = await axios.post(`${FASTAPI_BASE_URL}/optimizes`, req.body, {
+      timeout: 10000
+    });
+    const fastapiData = response.data || {};
+
+    return res.json({
+      status: fastapiData.status || "success",
+      message: fastapiData.pesan || "Request berhasil diproses.",
+      data: {
+        parameter_pencarian: fastapiData.parameter_pencarian || {
+          budget: req.body.budget_maksimal,
+          kalori: req.body.target_kalori
+        },
+        rekomendasi_menu: fastapiData.rekomendasi_menu || [],
+        ringkasan: fastapiData.ringkasan || {}
       }
+    });
+  } catch (error) {
+    if (error.response) {
+      return res.status(error.response.status).json({
+        status: "fail",
+        message: "FastAPI error",
+        data: {
+          details: error.response.data
+        }
+      });
     }
-  });
+
+    return next(error);
+  }
 });
 
 module.exports = router;

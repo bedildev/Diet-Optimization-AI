@@ -17,7 +17,7 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.json({
     status: "success",
-    message: "Diet Optimization API sudah aktif. Silakan gunakan endpoint /v1/optimize untuk mendapatkan rekomendasi menu.",
+    message: "Nutrition Optimization API sudah aktif. Silakan gunakan endpoint /v1/optimizes untuk mendapatkan rekomendasi menu.",
     data: {}
   });
 });

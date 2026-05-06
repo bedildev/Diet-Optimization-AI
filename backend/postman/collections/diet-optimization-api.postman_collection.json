@@ -43,7 +43,7 @@
       "response": []
     },
     {
-      "name": "Optimize Menu (Dummy)",
+      "name": "Optimize Menu (FastAPI Proxy)",
       "event": [
         {
           "listen": "test",
@@ -59,6 +59,14 @@
               "});",
               "pm.test(\"Has rekomendasi_menu array\", function () {",
               "  pm.expect(json.data.rekomendasi_menu).to.be.an(\"array\");",
+              "});",
+              "pm.test(\"Has parameter_pencarian\", function () {",
+              "  pm.expect(json.data.parameter_pencarian).to.be.an(\"object\");",
+              "  pm.expect(json.data.parameter_pencarian).to.have.property(\"budget\", 10000);",
+              "  pm.expect(json.data.parameter_pencarian).to.have.property(\"kalori\", 500);",
+              "});",
+              "pm.test(\"Has ringkasan object\", function () {",
+              "  pm.expect(json.data.ringkasan).to.be.an(\"object\");",
               "});"
             ]
           }
@@ -77,7 +85,7 @@
           "raw": "{\r\n  \"budget_maksimal\": 10000,\r\n  \"target_kalori\": 500\r\n}"
         },
         "url": {
-          "raw": "http://localhost:{{port}}/v1/optimize",
+          "raw": "http://localhost:{{port}}/v1/optimizes",
           "protocol": "http",
           "host": [
             "localhost"
@@ -85,7 +93,56 @@
           "port": "{{port}}",
           "path": [
             "v1",
-            "optimize"
+            "optimizes"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Optimize Menu - Validation Error (Missing budget_maksimal)",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code is 400\", function () {",
+              "  pm.response.to.have.status(400);",
+              "});",
+              "const json = pm.response.json();",
+              "pm.test(\"Response status is fail\", function () {",
+              "  pm.expect(json.status).to.eql(\"fail\");",
+              "});",
+              "pm.test(\"Has errors array\", function () {",
+              "  pm.expect(json.data.errors).to.be.an(\"array\");",
+              "});"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"target_kalori\": 500\r\n}"
+        },
+        "url": {
+          "raw": "http://localhost:{{port}}/v1/optimizes",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "{{port}}",
+          "path": [
+            "v1",
+            "optimizes"
           ]
         }
       },
